@@ -1,4 +1,4 @@
-package techquestions;
+package techQuestions;
 public class TrappingRainWater {
 
 	public static void main(String[] args) {

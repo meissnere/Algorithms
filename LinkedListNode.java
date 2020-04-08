@@ -1,4 +1,4 @@
-package techquestions;
+package techQuestions;
 
 // Erich's LinkedListNode public class for many Cracking the
 // Coding Interview Questions

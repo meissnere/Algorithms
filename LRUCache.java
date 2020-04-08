@@ -1,4 +1,4 @@
-package techquestions;
+package techQuestions;
 
 import java.util.HashMap;
 import java.util.Map;

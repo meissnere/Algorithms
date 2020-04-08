@@ -1,4 +1,4 @@
-package techquestions;
+package techQuestions;
 
 import java.util.Iterator;
 import java.util.LinkedList;
