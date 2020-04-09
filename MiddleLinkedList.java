@@ -14,25 +14,15 @@ public class MiddleLinkedList {
 	}
 	
 	public static ListNode middleNode(ListNode head) {
-		int count = 1;
-		ListNode iterator = head;
+		ListNode fast = head;
+		ListNode slow = head;
 		
-		while (iterator.next != null) {
-			iterator = iterator.next;
-			count++;
+		while (fast != null && fast.next != null) {
+			slow = slow.next;
+			fast = fast.next.next;
 		}
 		
-		int half = count / 2;
-		// this logic is incorrect!
-//		if (count % 2 == 0) {
-//			half = count / 2 + 1;
-//		}
-		
-		for (int i = 1; i <= half; i++) {
-			head = head.next;
-		}
-		
-		return head;
+		return slow;
 	}
 
 }
