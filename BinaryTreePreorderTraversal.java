@@ -1,7 +1,10 @@
 package techQuestions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Stack;
 
 public class BinaryTreePreorderTraversal {
@@ -9,10 +12,12 @@ public class BinaryTreePreorderTraversal {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		TreeNode root = new TreeNode(1);
-		root.left = new TreeNode(2);
-		root.right = new TreeNode(3);
+		root.left = new TreeNode(9);
+		root.right = new TreeNode(20);
+		root.right.left = new TreeNode(15);
+		root.right.right = new TreeNode(7);
 		
-		List<Integer> output = postorderTraversalIterative(root);
+		List<List<Integer>> output = levelOrder(root);
 		
 		System.out.println(output.toString());
 	}
@@ -146,5 +151,34 @@ public class BinaryTreePreorderTraversal {
 		}
 		
 		return list;
+	}
+	
+	public static List<List<Integer>> levelOrder(TreeNode root) {
+		if (root == null) {
+			return new ArrayList<List<Integer>>();
+		}
+		
+	}
+	
+	private static List<List<Integer>> doubleList = new ArrayList<List<Integer>>();
+
+	public static void levelOrderHelper(TreeNode node, int level) {
+		// using BFS to do level order traversal
+				List<Integer> queue = new ArrayList<>();
+				queue.add(root.val);
+				doubleList.add(queue);
+				queue = new ArrayList<>();
+				while (root.left != null || root.right != null) {
+					queue = new ArrayList<>();
+					if (root.left != null) {
+						queue.add(root.left.val);
+					}
+					if (root.right != null) {
+						queue.add(root.right.val);
+					}
+					doubleList.add(queue);
+				}
+				
+				return doubleList;
 	}
 }
