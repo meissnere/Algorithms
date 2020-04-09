@@ -2,6 +2,7 @@ package techQuestions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -11,13 +12,13 @@ public class BinaryTreePreorderTraversal {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TreeNode root = new TreeNode(1);
+		TreeNode root = new TreeNode(3);
 		root.left = new TreeNode(9);
 		root.right = new TreeNode(20);
 		root.right.left = new TreeNode(15);
 		root.right.right = new TreeNode(7);
 		
-		List<List<Integer>> output = levelOrder(root);
+		List<List<Integer>> output = levelOrderIterative(root);
 		
 		System.out.println(output.toString());
 	}
@@ -157,28 +158,62 @@ public class BinaryTreePreorderTraversal {
 		if (root == null) {
 			return new ArrayList<List<Integer>>();
 		}
-		
+		levelOrderHelper(root, 0);
+		return doubleList;
 	}
 	
 	private static List<List<Integer>> doubleList = new ArrayList<List<Integer>>();
 
 	public static void levelOrderHelper(TreeNode node, int level) {
 		// using BFS to do level order traversal
-				List<Integer> queue = new ArrayList<>();
-				queue.add(root.val);
-				doubleList.add(queue);
-				queue = new ArrayList<>();
-				while (root.left != null || root.right != null) {
-					queue = new ArrayList<>();
-					if (root.left != null) {
-						queue.add(root.left.val);
-					}
-					if (root.right != null) {
-						queue.add(root.right.val);
-					}
-					doubleList.add(queue);
-				}
-				
-				return doubleList;
+		int depth = doubleList.size();
+		if (level == depth) {
+			doubleList.add(new ArrayList());
+		}
+		System.out.println("We are currently at level: " + depth + 
+				" and at node.val of: " + node.val);
+		// now that a new level has been added, put the node value in that level
+		doubleList.get(level).add(node.val);
+		if (node.left != null) {
+			levelOrderHelper(node.left, level + 1);
+		}
+		if (node.right != null) {
+			levelOrderHelper(node.right, level + 1);
+		}
+	}
+	
+	public static List<List<Integer>> levelOrderIterative(TreeNode root) {
+		if (root == null) {
+			return new ArrayList<List<Integer>>();
+		}
+		Queue<TreeNode> queue = new LinkedList<>();
+		// initialize queue with root
+		queue.add(root);
+		// while the queue is not empty
+		int level = 0;
+		while (!queue.isEmpty()) {
+			// create new level for output
+			doubleList.add(new ArrayList());
+			int queue_size = queue.size();
+			for (TreeNode element: queue) {
+				System.out.print(element.val + " ");
+			}
+			System.out.println();
+			System.out.println("The current level is " + queue_size);
+			for (int i = 0; i < queue_size; i++) {
+				// first ever node should be root
+				TreeNode node = queue.poll();
+				// now add this node value to the output at the current level
+				doubleList.get(level).add(node.val);
+				// if there exists a left node:
+				if (node.left != null) queue.add(node.left);
+				// if there exists a right node
+				if (node.right != null) queue.add(node.right);
+			}
+			// a new level has been added at the top of the while loop, time to increment
+			level++;
+		}
+		
+		return doubleList;
 	}
 }
