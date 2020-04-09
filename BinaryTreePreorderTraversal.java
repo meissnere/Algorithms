@@ -12,7 +12,7 @@ public class BinaryTreePreorderTraversal {
 		root.left = new TreeNode(2);
 		root.right = new TreeNode(3);
 		
-		List<Integer> output = inorderTraversalIterative(root);
+		List<Integer> output = postorderTraversal(root);
 		
 		System.out.println(output.toString());
 	}
@@ -104,6 +104,25 @@ public class BinaryTreePreorderTraversal {
 			leftMost = leftMost.right;
 		}
 		return list;
+	}
+	
+	public static List<Integer> postorderTraversal(TreeNode root) {
+		if (root == null) {
+			return new ArrayList<Integer>();
+		}
+		
+		// keep looking left until there isn't a node there
+		if (root.left != null) {
+			inorderTraversal(root.left);
+		}
+		// after left has been added to list, then add right
+		if (root.right != null) {
+			inorderTraversal(root.right);
+		}
+		// there is no left or right node, print the root we're currently at
+		list.add(root.val);
+		
+		return list;	
 	}
 
 }
