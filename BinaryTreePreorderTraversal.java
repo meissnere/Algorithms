@@ -12,7 +12,7 @@ public class BinaryTreePreorderTraversal {
 		root.left = new TreeNode(2);
 		root.right = new TreeNode(3);
 		
-		List<Integer> output = postorderTraversal(root);
+		List<Integer> output = postorderTraversalIterative(root);
 		
 		System.out.println(output.toString());
 	}
@@ -125,4 +125,26 @@ public class BinaryTreePreorderTraversal {
 		return list;	
 	}
 
+	public static List<Integer> postorderTraversalIterative(TreeNode root) {
+		if (root == null) {
+			return new ArrayList<Integer>();
+		}
+		// again, the recursive method is trivial. what about iterative?
+		// we use a stack data structure. pop the current node into the list,
+		// and then add its root and right nodes
+		Stack<TreeNode> stack = new Stack<>();
+		stack.add(root);
+		while (!stack.isEmpty()) {
+			TreeNode currNode = stack.pop();
+			list.add(0, currNode.val);
+			if (currNode.left != null) {
+				stack.add(currNode.left);
+			}
+			if (currNode.right != null) {
+				stack.add(currNode.right);
+			}
+		}
+		
+		return list;
+	}
 }
