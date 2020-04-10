@@ -1,10 +1,12 @@
 package techQuestions;
 
+import java.util.Arrays;
+
 public class MinimumPathSum {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int[][] grid = {{1,3,1},{1,5,1},{4,2,1}};
+		int[][] grid = {{1,3,1},{1,5,1},{4,2,1},{1,1,1}};
 		
 		System.out.println(grid.length + " " + grid[0].length);
 		
@@ -12,29 +14,40 @@ public class MinimumPathSum {
 	}
 	
 	public static int minPathSum(int[][] grid) {
-		return minRecurse(grid, 0, 0);
+		//dynamic programming approach
+		
+		// first create new grid of same size
+		int rows = grid.length;
+		int columns = grid[0].length;
+//		int[][] dp = new int[rows][columns];
+		
+		for (int i = rows - 1; i >= 0; i--) {
+			for (int j = columns - 1; j >= 0; j--) {
+				// we are at the bottom right to begin with; initializing step:
+//				if (j == columns - 1 && i == rows-1) {
+//					dp[i][j] = grid[rows-1][columns-1];
+//				}
+				// if we are at the furthest down, dp[i][j] equals what is right
+				if (i == rows-1 && j < columns-1) {
+					grid[i][j] = grid[i][j+1] + grid[i][j];
+				}
+				// if we are at the furthest right, dp[i][j] equals what is below
+				if (j == columns-1 && i < rows-1) {
+					grid[i][j] = grid[i+1][j] + grid[i][j];
+				}
+				// if we can compare right and left path
+				if (i < rows-1 && j < columns-1) {
+					grid[i][j] = Math.min(grid[i+1][j], grid[i][j+1]) + grid[i][j];
+				}
+			}
+		}
+		
+//		for (int i = 0; i < dp.length; i++) {
+//			System.out.println(Arrays.deedp[i].toString());
+//		}
+		
+//		System.out.println(Arrays.deepToString(dp));
+		return grid[0][0];
     }
-	
-	public static int minRecurse(int[][] grid, int i, int j) {
-		if (i >= grid.length && j >= grid[0].length) {
-			return grid[i][j];
-		}
-		
-		int rightSum;
-		if (j+1 < grid[0].length) {
-			rightSum = minRecurse(grid, i, j+1);
-		} else {
-			rightSum = Integer.MAX_VALUE;
-		}
-		
-		int downSum;
-		if (i+1 < grid.length) {
-			downSum = minRecurse(grid, i+1, j);
-		} else {
-			downSum = Integer.MAX_VALUE;
-		}
-		
-		return Math.min(rightSum, downSum);
-	}
 
 }
