@@ -38,7 +38,9 @@ public class MinIntHeap {
 //			return;
 //		}
 //	}
-	
+
+
+
 	// true implementation of swap above
 	private void swap(int index1, int index2) {
 		int temp = items[index2];
