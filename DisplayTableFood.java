@@ -24,8 +24,8 @@ public class DisplayTableFood {
     }
 
     public List<List<String>> displayTable(List<List<String>> orders) {
-        List<List<String>> result = new ArrayList<List<String>>;
-        List<String> header = new ArrayList<String>;
+        List<List<String>> result = new ArrayList<List<String>>();
+        List<String> header = new ArrayList<String>();
         header.add("Table");
         header.add("Beef Burrito");
         header.add("Ceviche");
@@ -37,7 +37,8 @@ public class DisplayTableFood {
             int fried_chicken = 0;
             int water = 0;
             List<String> table = new ArrayList<>();
-            table.add();
+//            table.add();
         }
+        return result;
     }
 }
