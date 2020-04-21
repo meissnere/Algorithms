@@ -1,26 +1,106 @@
 package techQuestions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class BinaryTreePreorderTraversal {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TreeNode root = new TreeNode(3);
-		root.left = new TreeNode(9);
-		root.right = new TreeNode(20);
-		root.right.left = new TreeNode(15);
-		root.right.right = new TreeNode(7);
-		
-		List<List<Integer>> output = levelOrderIterative(root);
-		
+//		TreeNode root = new TreeNode(3);
+//		root.left = new TreeNode(9);
+//		root.right = new TreeNode(20);
+//		root.right.left = new TreeNode(15);
+//		root.right.right = new TreeNode(7);
+//
+//		List<List<Integer>> output = levelOrderIterative(root);
+//
+//		System.out.println(output.toString());
+
+		int[] test = {8,5,1,7,10};
+		TreeNode root = bstFromPreorder(test);
+		List<Integer> output = preorderTraversal(root);
 		System.out.println(output.toString());
+
+	}
+
+	// return the root node of a binary search tree that matches the given preorder traversal
+	// recall that a binary search tree is a binary tree where for every node, any descendant
+	// of node.left has a value < node.val, and any descendant of node.right has a value of
+	// > node.val. A preorder traversal displays root first, then traverses left, then
+	// traverses right
+
+	static HashMap<Integer, Integer> indexMap = new HashMap<>();
+	static int[] preorder = {8,5,1,7,10};
+
+	public static TreeNode bstFromPreorder(int[] preorder) {
+		if (preorder.length == 0) {
+			TreeNode node = null;
+			return node;
+		}
+		// the root will always be the first element
+		TreeNode root = new TreeNode(preorder[0]);
+		// attempt at iterative solution.
+		Deque<TreeNode> deque = new ArrayDeque<TreeNode>();
+		// initialize double ended queue with root
+		deque.push(root);
+
+		for (int i = 1; i < preorder.length; i++) {
+			// look at the last added element of the stack
+			// and treat it as the parent node
+			TreeNode peek = deque.peek();
+			// initialize a child node to be the current element
+			// we are looking at
+			TreeNode thisNode = new TreeNode(preorder[i]);
+			// check if we must adjust the parent that we just peeked
+			while (!deque.isEmpty() && deque.peek().val < thisNode.val) {
+				// poping elements off the stack until empty
+				// or we find a parent > current node
+				peek = deque.pop();
+			}
+			if (peek.val < thisNode.val) {
+				peek.right = thisNode;
+			} else {
+				peek.left = thisNode;
+			}
+			// now add the child to the queue and iterate on it
+			deque.push(thisNode);
+		}
+		return root;
+//		// create sorted copy of preorder
+//		int[] inorder = Arrays.copyOf(preorder, preorder.length);
+//		Arrays.sort(inorder); // O(N log N) time to sort array
+//
+//		// now build a hash map where value is the index
+//		for (int i = 0; i < inorder.length; i++) {
+//			indexMap.put(inorder[i], i);
+//		}
+//
+//		return helper(0, inorder.length);
+	}
+
+	static int pre_index = 0;
+
+	public static TreeNode helper(int left, int right) {
+		// base case for recursion as always
+		if (left == right) {
+			return null;
+		}
+		// root of this tree initialized
+		int rootValue = preorder[pre_index];
+		TreeNode root = new TreeNode(rootValue);
+
+		// time to split inorder list into left and right subtrees
+		int index = indexMap.get(rootValue);
+		System.out.println(index);
+
+		// now we do recursive part
+		pre_index++;
+		// build left subtree
+		root.left = helper(left, index);
+		// build right subtree
+		root.right = helper(index+1, right);
+
+		return root;
 	}
 	
 	private static List<Integer> list = new ArrayList<>();
