@@ -53,10 +53,10 @@ public class MaxPointsCards {
         }
         if (leftDraw) {
             leftTurns++;
-            leftChoice = cardPoints[leftTurns] + calcMax(cardPoints, draws-1, true);
+            leftChoice = leftChoice + cardPoints[leftTurns] + calcMax(cardPoints, draws-1, true);
         }
         rightTurns++;
-        rightChoice = cardPoints[rightTurns] + calcMax(cardPoints, draws - 1, true);
+        rightChoice = rightChoice + cardPoints[cardPoints.length - 1 - rightTurns] + calcMax(cardPoints, draws - 1, true);
         return Math.max(leftChoice, rightChoice);
     }
 }
