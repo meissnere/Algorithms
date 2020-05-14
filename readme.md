@@ -1,5 +1,6 @@
 # Algorithms
-Algorithm Studies from Master's in Computer Science
+Algorithm Studies from my Master's in Computer Science. My degree
+is from the Georgia Institute of Technology.
 
 ## Trie Data Structure
 The Trie or prefix tree is a tree data structure we use for retrieval
@@ -99,4 +100,52 @@ class TrieNode {
 }
 ```
 
-![T9 Text](assets/t9text.png)
+Two of the most common operations in a trie are insertion of a key
+and search for a key.
+
+### Insertion of a Key to a Trie
+We insert a key by searching into the trie. First, we visit the
+root and search a link. which corresponds to the first key 
+character. Two cases will ensue:
+- A link exists; therefore, move down the tree following the link
+to the next child level. The algorithm continues with searching
+for the next key character.
+- A link does not exist. We will now create a new node and link
+it with the parent's link matching the current key character. This
+step will be repeated until we encounter the last character of the
+key. At that point, we mark the current node as an end node and the
+algorithm completes. 
+
+![Build Trie](assets/buildTrie.png)
+
+```java
+class Trie {
+    private TrieNode root;
+
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    // Inserts a word into the trie.
+    public void insert(String word) {
+        TrieNode node = root;
+        for (int i = 0; i < word.length(); i++) {
+            char currentChar = word.charAt(i);
+            if (!node.containsKey(currentChar)) {
+                node.put(currentChar, new TrieNode());
+            }
+            node = node.get(currentChar);
+        }
+        node.setEnd();
+    }
+}
+```
+### Complexity Analysis
+- Time Complexity: O(M) where *M* is the key length
+
+
+![Build Trie](assets/buildTrie.png)
+
+![Build Trie](assets/buildTrie.png)
+
+![Build Trie](assets/buildTrie.png)
