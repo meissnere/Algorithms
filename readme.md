@@ -140,12 +140,91 @@ class Trie {
     }
 }
 ```
-### Complexity Analysis
+#### Complexity Analysis
 - Time Complexity: O(M) where *M* is the key length
+During each iteration of the algorithm, we are either creating or
+examining a node in the trie until we reach the end of the key.
+This takes only *M* operations.
 
+- Space complexity: O(M)
+In the worst case, the newly inserted key does not share a prefix
+with the keys already inserted in the trie. We will then have
+to add *M* new nodes, which will takes us O(M) space.
 
-![Build Trie](assets/buildTrie.png)
+### Search for a Key in a Trie
 
-![Build Trie](assets/buildTrie.png)
+Each key is represented in the trie as a path from the root to the
+internal node or leaf. We start from the root with the first key
+character, then we examine the current node for a link corresponding
+to a key character. There are two cases when searching:
+- A link exists; we move to the next node in the path following
+this link, and proceed searching for the next key character.
+- A link does not exist; if there are no available key characters
+and the current node is marked as `isEnd`, we return true. Otherwise,
+there are two more possible cases where we return false:
+    - There are key characters left, but it is impossible to follow
+    the key path in the trie, and the key is missing.
+    - No key characters are left, but the current node is not marked
+    as isEnd. Therefore, the search key is only a prefix of another
+    key in the trie.
 
-![Build Trie](assets/buildTrie.png)
+![Search Trie](assets/searchTrie.png)
+
+```java
+class Trie {
+    ...
+
+    // search a prefix or whole key in trie and
+    // returns the node where search ends
+    private TrieNode searchPrefix(String word) {
+        TrieNode node = root;
+        for (int i = 0; i < word.length(); i++) {
+           char curLetter = word.charAt(i);
+           if (node.containsKey(curLetter)) {
+               node = node.get(curLetter);
+           } else {
+               return null;
+           }
+        }
+        return node;
+    }
+
+    // Returns if the word is in the trie.
+    public boolean search(String word) {
+       TrieNode node = searchPrefix(word);
+       return node != null && node.isEnd();
+    }
+}
+```
+#### Complexity Analysis
+- Time Complexity: O(M) - In each step of the algorithm, we search
+for the next key character. In the worst case, the algorithm
+performs *M* operations.
+- Space Complexity: O(1)
+
+### Search for a Key Prefix in a Trie
+Similar to searching a key in a trie, we traverse the trie from
+the root until there are no characters left in the key prefix or
+it is impossible to continue the path in the trie with the current
+key character. The only difference is that when we come to an end of
+the key prefix, we always return true. We do not need to consider
+the boolean `isEnd` because we are searching for a prefix of a key,
+not a whole key.
+
+![Prefix Search](assets/prefixSearch.png)
+
+```java
+class Trie {
+    ...
+
+    // Returns if there is any word in the trie
+    // that starts with the given prefix.
+    public boolean startsWith(String prefix) {
+        TrieNode node = searchPrefix(prefix);
+        return node != null;
+    }
+}
+```
+#### Complexity Analysis
+- Time Complexity: O(M)
+- Space Complexity: O(1)
