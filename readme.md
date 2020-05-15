@@ -228,3 +228,30 @@ class Trie {
 #### Complexity Analysis
 - Time Complexity: O(M)
 - Space Complexity: O(1)
+
+## Permutations
+For a certain Georgia Tech project in which we were tasked
+to consider all permutations of an input, I found the algorithm
+to generate these test cases quite clever. Through my studies,
+I discovered the approach of **backtracking**.
+
+**Backtracking** is an algorithm for finding all solutions by exploring
+all potential candidates. If the solution candidate turns out to not
+be a solution, then the algorithm will discard it by making some changes
+on the previous step. These *changes on the previous step* are the 
+backtracking idea to this algorithmic approach.
+
+Imagine the problem space where you are given a distinct integer array
+and must create all possible permutations of this array. An example
+of such an array is [1,2,3]. A backtrack function that takes the index
+of the first integer to consider as an argument would work as follows:
+- If the first integer to consider has index `n`, that means that the
+current permutation is done.
+- Iterate over the integers from index `first` to index `n-1`.
+    - Place the `i`-th integer first in the permutation, i.e.
+    `swap(nums[first], nums[i])`
+    - Proceed to create all permutations which start from the `i`-th
+    integer: `backtrack(first + 1)`
+    - Now, backtrack, i.e. `swap(nums[first], nums[i])` back
+    
+![Backtrack Algo](assets/backtrack.png)
