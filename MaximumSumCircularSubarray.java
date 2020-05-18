@@ -49,35 +49,69 @@ import java.util.Properties;
 
 public class MaximumSumCircularSubarray {
     public static void main(String[] args) {
-        int[] A = {3};
+        int[] A = {5,-3,5};
         System.out.println(maxSubarraySumCircular(A));
     }
     public static int maxSubarraySumCircular(int[] A) {
+        // initialized these two variables to equal first array element
+        int ans = A[0];
+        int cur = A[0];
+        int len = A.length;
+        for (int i = 1; i < len; i++) {
+            // for each element in the array, cur holds the maximum sum up to that point
+            cur = A[i] + Math.max(cur, 0);
+//            System.out.println(cur);
+            ans = Math.max(ans, cur);
+        }
+//        System.out.println(ans);
+        // the ans variable now holds the answer for 1 interval subarrays
+        // next we must calculate the answer for 2 interval subarrays
+        // for each i, we want to know the maximum of sum(A[j:]) with j >= i+2
+        int[] rightSums = new int[len];
+        // initalize the end of this rightsum array
+        rightSums[len-1] = A[len-1];
+        for (int i = len - 2; i >= 0; i--) {
+            // start at second to last index
+            rightSums[i] = rightSums[i+1] + A[i];
+        }
+        // we know that maxRight[i] is equal to the max(j >= 1) rightsums[j]
+        int[] maxRight = new int[len];
+        maxRight[len-1] = A[len-1];
+        for (int i = len - 2; i>=0; i--) {
+            maxRight[i] = Math.max(maxRight[i+1], rightSums[i]);
+        }
+        int leftSum = 0;
+        for (int i = 0; i < len-2; i++) {
+            leftSum = leftSum + A[i];
+            ans = Math.max(ans, leftSum + maxRight[i+2]);
+        }
+
+        return ans;
         // brute force concept: for each index i in the array,
         // test every possible length and replace maxSum with largest
-        int maxSum = Integer.MIN_VALUE;
-        for (int i = 0; i < A.length; i++) {
-            int sum = A[i];
-//            System.out.println(sum);
-            if (sum > maxSum) {
-                maxSum = sum;
-            }
-            for (int j = i + 1; j < A.length; j++) {
-                sum = sum + A[j];
-                if (sum > maxSum) {
-                    maxSum = sum;
-                }
-            }
-            if (i > 0) {
-//                System.out.println(i);
-                for (int k = 0; k < i; k++) {
-                    sum = sum + A[k];
-                    if (sum > maxSum) {
-                        maxSum = sum;
-                    }
-                }
-            }
-        }
-        return maxSum;
+//        int maxSum = Integer.MIN_VALUE;
+//        for (int i = 0; i < A.length; i++) {
+//            int sum = A[i];
+////            System.out.println(sum);
+//            if (sum > maxSum) {
+//                maxSum = sum;
+//            }
+//            for (int j = i + 1; j < A.length; j++) {
+//                sum = sum + A[j];
+//                if (sum > maxSum) {
+//                    maxSum = sum;
+//                }
+//            }
+//            if (i > 0) {
+////                System.out.println(i);
+//                for (int k = 0; k < i; k++) {
+//                    sum = sum + A[k];
+//                    if (sum > maxSum) {
+//                        maxSum = sum;
+//                    }
+//                }
+//            }
+//        }
+//        return maxSum;
     }
 }

@@ -320,3 +320,63 @@ Now, how do we compute `dp` efficiently? We will maintain two variables
 to reduce space complexity: `ans` as the max(dp[j]) and `cur` as the 
 current dp[j] we are computing. We update these variables as `j` iterates
 from 0 to `A.length - 1`.
+
+The following pseudocode explains the approach well:
+```
+#Kadane's algorithm
+ans = cur = None
+for x in A:
+    cur = x + max(cur, 0)
+    ans = max(ans, cur)
+return ans
+```
+
+### Approach: Next Array
+Subarrays of circular arrays can be classified as either a *one-interval*
+subarray or a *two-interval* subarray. For example, if A = [0, 1, 2, 3, 4, 5, 6] 
+is the underlying buffer of our circular array, we could represent
+the subarray [2, 3, 4] as one interval [2,4], but we would
+represent the subarray [5, 6, 0, 1] as two intervals [5,6],[0,1].
+
+Via Kidane's algorithm, we know how to get the maximum of one-interval
+subarrays, so it only remains to consider two-interval subarrays. The
+code looks like the following:
+
+```java
+class Solution {
+    public int maxSubarraySumCircular(int[] A) {
+        int N = A.length;
+
+        int ans = A[0], cur = A[0];
+        for (int i = 1; i < N; ++i) {
+            cur = A[i] + Math.max(cur, 0);
+            ans = Math.max(ans, cur);
+        }
+
+        // ans is the answer for 1-interval subarrays.
+        // Now, let's consider all 2-interval subarrays.
+        // For each i, we want to know
+        // the maximum of sum(A[j:]) with j >= i+2
+
+        // rightsums[i] = A[i] + A[i+1] + ... + A[N-1]
+        int[] rightsums = new int[N];
+        rightsums[N-1] = A[N-1];
+        for (int i = N-2; i >= 0; --i)
+            rightsums[i] = rightsums[i+1] + A[i];
+
+        // maxright[i] = max_{j >= i} rightsums[j]
+        int[] maxright = new int[N];
+        maxright[N-1] = A[N-1];
+        for (int i = N-2; i >= 0; --i)
+            maxright[i] = Math.max(maxright[i+1], rightsums[i]);
+
+        int leftsum = 0;
+        for (int i = 0; i < N-2; ++i) {
+            leftsum += A[i];
+            ans = Math.max(ans, leftsum + maxright[i+2]);
+        }
+
+        return ans;
+    }
+}
+```
