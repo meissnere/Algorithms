@@ -380,3 +380,72 @@ class Solution {
     }
 }
 ```
+
+## Guess the Word
+Imagine you are given an interface that holds a secret word. You are
+given a list of unique words, which are all 6 letters long. One word
+in this list is the secret word. You can call this interface to make
+guesses at what the secret word is. You only have 10 guesses to guess
+the word. An example is below:
+
+```
+Example 1:
+Input: secret = "acckzz", wordlist = ["acckzz","ccbazz","eiowzz","abcczz"]
+
+Explanation:
+
+master.guess("aaaaaa") returns -1, because "aaaaaa" is not in wordlist.
+master.guess("acckzz") returns 6, because "acckzz" is secret and has all 6 matches.
+master.guess("ccbazz") returns 3, because "ccbazz" has 3 matches.
+master.guess("eiowzz") returns 2, because "eiowzz" has 2 matches.
+master.guess("abcczz") returns 4, because "abcczz" has 4 matches.
+
+We made 5 calls to master.guess and one of them was the secret, so we pass the test case.
+```
+
+There are 5 additional test cases with 100 words each in the given
+word list.
+
+### Intuition
+The less words in this unique words list, the better. It will be easier
+to deduce teh secret word if we are given less words to choose from.
+Therefore, how do we make educated guesses; that is, how do we make
+guesses that minimize the resulting word list we should then choose
+from?
+
+Thinking more deeply about this problem, we can recognize that there
+is no solution that can guarantee to find a secret word in 10 tries.
+For instance, if the test case was ["aaaaaa", "bbbbbb", ..., "zzzzzz"],
+then we would need 26 tries to find the secret in the worst case.
+Therefore, we are really just being tested on a smart strategy.
+
+### Algorithm
+We take a word from the unique word list and guess. Next, update
+the wordlist to keep only the same matches to our guess. A matching
+helper function could be the following:
+```java
+public int match(String a, String b) {
+        int matches = 0;
+        for (int i = 0; i < a.length(); ++i)
+            if (a.charAt(i) == b.charAt(i))
+                matches ++;
+        return matches;
+    }
+```
+
+We could have a random approach since all of the words are generated
+randomly. Let's just generate a word of length six that is random
+and test it.
+
+Is it easy to get a good match? The possibility to get 0 matches with
+the secret word is (25/26)<sup>6</sup> = 79.03%. This high probability
+of getting 0 matches means that the size of the unique wordlist will
+reduce slowly! Let's try and find candidates that have a large "family",
+that is the fewest 0 matched with other words. For each word, we note
+how many words of 0 matches it gets. Then, we guess the word with the
+minimum words of 0 matches.
+
+With these two approaches in mind, here are the results with 1000
+testcases:
+
+![random vs minimax](assets/random_minimax.png)
