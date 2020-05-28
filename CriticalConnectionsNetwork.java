@@ -57,8 +57,6 @@ public class CriticalConnectionsNetwork {
 	}
 	
 	public static List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
-		// create an integer array of the lowest vertex that a node can reach
-		int[] lowestV = new int[n];
 		// construct a graph, make sure to account for the fact that
 		// every connection is undirected
 		List<Integer>[] graph = new ArrayList[n];
@@ -68,14 +66,43 @@ public class CriticalConnectionsNetwork {
 		for (int i = 0; i < connections.size(); i++) {
 			int toVertex = connections.get(i).get(1);
 			int fromVertex = connections.get(i).get(0);
-			System.out.println("to Vertex is: " + toVertex +
-					", and from vertex is: " + fromVertex);
+//			System.out.println("to Vertex is: " + toVertex +
+//					", and from vertex is: " + fromVertex);
 			graph[toVertex].add(fromVertex);
 			graph[fromVertex].add(toVertex);
 		}
-		for (List<Integer> directions: graph) {
-			System.out.println(directions.toString());
+		int timer = 0;
+		int[] timestampAtNode = new int[n];
+		boolean[] visited = new boolean[n];
+		List<List<Integer>> criticalConnections = new ArrayList<List<Integer>>();
+		dfsTarjan(graph, -1, 0, visited, timer, timestampAtNode, criticalConnections);
+		return criticalConnections;
+	}
+
+	public static void dfsTarjan(List<Integer>[] graph, int parent, int node, boolean[] visited,
+								 int timer, int[] timestampAtNode, List<List<Integer>> criticals) {
+		// this node has now been visited:
+		visited[node] = true;
+		timer++;
+		timestampAtNode[node] = timer;
+		int currentTime = timestampAtNode[node];
+
+		// entire a loop that will look at each node's neighbors
+		for (int neighbor: graph[node]) {
+			// if the neighbor is in fact this current node's parent, continue
+			if (neighbor == parent) {
+				continue;
+			}
+			// if the neighbor hasn't been visited, we do not know the timestamp!
+			// dfs recurse to visit that neighbor
+			if (!visited[neighbor]) {
+				dfsTarjan(graph, node, neighbor, visited, currentTime, timestampAtNode, criticals);
+			}
+			timestampAtNode[node] = Math.min(timestampAtNode[node], timestampAtNode[neighbor]);
+			if (currentTime < timestampAtNode[neighbor]) {
+				criticals.add(Arrays.asList(node, neighbor));
+			}
 		}
-		return connections;
+		System.out.println("when time is: " + currentTime + ", the timestamp array is: " + Arrays.toString(timestampAtNode));
 	}
 }
