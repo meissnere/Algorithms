@@ -1,5 +1,35 @@
 package techQuestions;
 
+/*
+Purpose: Given a 2d grid map of '1's (land) and '0's (water),
+count the number of islands. An island is surrounded by water
+and is formed by connecting adjacent lands horizontally or vertically.
+You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+
+Input:
+11110
+11010
+11000
+00000
+
+Output: 1
+Example 2:
+
+Input:
+11000
+11000
+00100
+00011
+
+Output: 3
+Author: Erich Meissner
+Date: 5/12/20
+Time: 2:22 AM
+ */
+
+
 import java.util.*;
 
 public class NumberIslands {
@@ -9,7 +39,7 @@ public class NumberIslands {
 		char grid[][] = {{'1','1','0','0','0'},{'1','1','0','0','0'},
 				{'0','0','1','0','0'},{'0','0','0','1','1'}};
 
-		System.out.println(bfsNumIslands(grid));
+		System.out.println(numIslandsNew(grid));
 		
 //		int r = 5;
 //		int nc = 4;
@@ -29,6 +59,47 @@ public class NumberIslands {
 		
 //		System.out.println(bfsNumIslands(grid));
 //		System.out.println(numIslands(grid));
+	}
+
+	static int islandCount = 0;
+
+	public static int numIslandsNew(char[][] grid) {
+		if (grid.length == 0) {
+			return 0;
+		}
+		// depth first search attempt
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[0].length; j++) {
+				if (grid[i][j] == '1') {
+					// finding all adjacent land masses
+					// and setting them to 0
+					dfsNew(grid, i, j);
+					islandCount++;
+				}
+			}
+		}
+		return islandCount;
+	}
+
+	public static void dfsNew(char[][] grid, int row, int column) {
+		// base case for recursion
+		if (row >= grid.length || column >= grid[0].length
+			|| row < 0 || column < 0) {
+			return;
+		}
+		if (grid[row][column] == '1') {
+			grid[row][column] = 0;
+			// look down
+			dfsNew(grid, row+1, column);
+			// look up
+			dfsNew(grid, row-1, column);
+			// look right
+			dfsNew(grid, row, column+1);
+			// look left
+			dfsNew(grid, row, column-1);
+		} else {
+			return;
+		}
 	}
 	
 	public static int numIslands(char[][] grid) {

@@ -1,5 +1,25 @@
 package techQuestions;
 
+/*
+Purpose: There are n servers numbered from 0 to n-1 connected
+by undirected server-to-server connections forming a network,
+where connections[i] = [a, b] represents a connection between
+servers a and b. Any server can reach any other server directly
+or indirectly through the network.
+
+A critical connection is a connection that, if removed, will
+make some server unable to reach some other server.
+
+Input: n = 4, connections = [[0,1],[1,2],[2,0],[1,3]]
+Output: [[1,3]]
+Explanation: [[3,1]] is also accepted.
+
+Return all critical connections in the network in any order.
+Author: Erich Meissner
+Date: 5/12/20
+Time: 2:04 AM
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,66 +52,57 @@ public class CriticalConnectionsNetwork {
 		connections.add(3, fourth);
 		
 		List<List<Integer>> output = criticalConnections(4, connections);
-		
-		for (int i = 0; i < output.size(); i++) {
-			List<Integer> connect = output.get(i);
-			for (int j = 0; j < connect.size(); j++) {
-				System.out.println(i + " connection has index: " + j + ", connection is: " + connect.get(j));
-			}
-		}
+
+		System.out.println(output.toString());
 	}
 	
 	public static List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
-		// start with initializing two integer arrays with length n
-		// disc will record the time when a vertex u was discovered
-		// low will record the lowest vertex a vertex u can reach
-		int[] disc = new int[n], low = new int[n];
-		// use adjacency list instead of matrix will save some memory, adjmatrix will cause MLE
+		// construct a graph, make sure to account for the fact that
+		// every connection is undirected
 		List<Integer>[] graph = new ArrayList[n];
-		List<List<Integer>> res = new ArrayList<>();
-		Arrays.fill(disc, -1); // use disc to track if visited (disc[i] == -1)
-		System.out.println(Arrays.toString(disc));
 		for (int i = 0; i < n; i++) {
 			graph[i] = new ArrayList<>();
 		}
-		// build graph
 		for (int i = 0; i < connections.size(); i++) {
-			int from = connections.get(i).get(0), to = connections.get(i).get(1);
-			System.out.println("from is: " + from + ", to is: " + to);
-			graph[from].add(to);
-			graph[to].add(from);
-			System.out.println(graph[from].toString());
-			System.out.println(graph[to].toString());
+			int toVertex = connections.get(i).get(1);
+			int fromVertex = connections.get(i).get(0);
+//			System.out.println("to Vertex is: " + toVertex +
+//					", and from vertex is: " + fromVertex);
+			graph[toVertex].add(fromVertex);
+			graph[fromVertex].add(toVertex);
 		}
-
-		for (int i = 0; i < n; i++) {
-			if (disc[i] == -1) {
-				dfs(i, low, disc, graph, res, i);
-			}
-		}
-		return res;
+		int timer = 0;
+		int[] timestampAtNode = new int[n];
+		boolean[] visited = new boolean[n];
+		List<List<Integer>> criticalConnections = new ArrayList<List<Integer>>();
+		dfsTarjan(graph, -1, 0, visited, timer, timestampAtNode, criticalConnections);
+		return criticalConnections;
 	}
 
-	static int time = 0; // time when discover each vertex
+	public static void dfsTarjan(List<Integer>[] graph, int parent, int node, boolean[] visited,
+								 int timer, int[] timestampAtNode, List<List<Integer>> criticals) {
+		// this node has now been visited:
+		visited[node] = true;
+		timer++;
+		timestampAtNode[node] = timer;
+		int currentTime = timestampAtNode[node];
 
-	private static void dfs(int u, int[] low, int[] disc, List<Integer>[] graph, List<List<Integer>> res, int pre) {
-		disc[u] = low[u] = ++time; // discover u
-		for (int j = 0; j < graph[u].size(); j++) {
-			int v = graph[u].get(j);
-			if (v == pre) {
-				continue; // if parent vertex, ignore
+		// entire a loop that will look at each node's neighbors
+		for (int neighbor: graph[node]) {
+			// if the neighbor is in fact this current node's parent, continue
+			if (neighbor == parent) {
+				continue;
 			}
-			if (disc[v] == -1) { // if not discovered
-				dfs(v, low, disc, graph, res, u);
-				low[u] = Math.min(low[u], low[v]);
-				if (low[v] > disc[u]) {
-					// u - v is critical, there is no path for v to reach back to u or previous vertices of u
-					res.add(Arrays.asList(u, v));
-				}
-			} else { // if v discovered and is not parent of u, update low[u], cannot use low[v] because u is not subtree of v
-				low[u] = Math.min(low[u], disc[v]);
+			// if the neighbor hasn't been visited, we do not know the timestamp!
+			// dfs recurse to visit that neighbor
+			if (!visited[neighbor]) {
+				dfsTarjan(graph, node, neighbor, visited, currentTime, timestampAtNode, criticals);
+			}
+			timestampAtNode[node] = Math.min(timestampAtNode[node], timestampAtNode[neighbor]);
+			if (currentTime < timestampAtNode[neighbor]) {
+				criticals.add(Arrays.asList(node, neighbor));
 			}
 		}
+		System.out.println("when time is: " + currentTime + ", the timestamp array is: " + Arrays.toString(timestampAtNode));
 	}
-
 }

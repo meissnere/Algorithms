@@ -1,5 +1,13 @@
 package techQuestions;
 
+/*
+Purpose: determining count of univalue subtrees
+Author: Erich Meissner
+Date: 5/5/20
+Time: 9:35 PM
+ */
+
+
 public class CountUnivalueSubtrees {
     public static void main(String[] args) {
         TreeNode root = new TreeNode(5);
