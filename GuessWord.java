@@ -42,39 +42,7 @@ Time: 8:01 PM
 
 public class GuessWord {
     public static void main(String[] args) {
-
-    }
-
-    public void findSecretWord(String[] wordlist, Master master) {
-        for (int t = 0, x = 0; t < 10 && x < 6; ++t) {
-            int count[][] = new int[6][26], best = 0;
-            for (String w : wordlist)
-                for (int i = 0; i < 6; ++i)
-                    count[i][w.charAt(i) - 'a']++;
-            String guess = wordlist[0];
-            for (String w: wordlist) {
-                int score = 0;
-                for (int i = 0; i < 6; ++i)
-                    score += count[i][w.charAt(i) - 'a'];
-                if (score > best) {
-                    guess = w;
-                    best = score;
-                }
-            }
-            x = master.guess(guess);
-            List<String> wordlist2 = new ArrayList<String>();
-            for (String w : wordlist)
-                if (match(guess, w) == x)
-                    wordlist2.add(w);
-            wordlist = wordlist2.toArray(new String[0]);
-        }
-    }
-
-    public static int match(String a, String b) {
-        int matches = 0;
-        for (int i = 0; i < a.length(); ++i)
-            if (a.charAt(i) == b.charAt(i))
-                matches ++;
-        return matches;
+        System.out.println("hello");
     }
 }
+
