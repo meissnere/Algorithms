@@ -48,7 +48,6 @@ public class RemoveDupsSortedArray {
         for (int i = index + 1; i < arr.length; i++) {
             arr[i - 1] = arr[i];
         }
-
         return arr;
     }
 
